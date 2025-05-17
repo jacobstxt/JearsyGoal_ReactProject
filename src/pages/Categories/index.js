@@ -3,8 +3,9 @@ import axios from "axios";
 
 const  CategoriesPage = ()=>{
 
-    const [list, setList] = useState([]);
     //Use State - вміє при зміні викликати рендер компонента в якому знаходиться
+    const [list, setList] = useState([]);
+   
 
     useEffect(()=>{
         axios.get("http://localhost:5025/api/Categories")
@@ -19,9 +20,10 @@ const  CategoriesPage = ()=>{
 
     return (
         <>
-            <h1 className={"text-center"}>Категорії</h1>
-            {list.length===0 ? <h1>Список пустий</h1>:
-                <table className="table">
+            <h1 className={"text-center mt-5"}>Categories List</h1>
+            {list.length===0 ? <h1>The List is empty</h1>:
+
+                <table className="table table-bordered mt-5">
                     <thead>
 
                     <tr>
