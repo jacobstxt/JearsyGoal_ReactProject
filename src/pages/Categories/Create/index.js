@@ -1,7 +1,7 @@
 import {useState} from "react";
-import axios from "axios";
 import { NavLink } from "react-router-dom";
 import {motion} from "framer-motion";
+import axiosInstance from "../../../api/axiosInstance";
 
 
 const  CreatePage=()=> {
@@ -20,9 +20,9 @@ const  CreatePage=()=> {
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        axios.post("http://localhost:5025/api/Categories", data,
+        await axiosInstance.post("/api/Categories", data,
             {
             headers: {
                 'Content-Type': 'multipart/form-data',

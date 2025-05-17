@@ -1,58 +1,49 @@
 import {useEffect, useState} from "react";
-import axios from "axios";
+import AxiosInstance from "../../api/axiosInstance";
+import {BASE_URL} from "../../api/apiConfig";
 
-const  CategoriesPage = ()=>{
+const CategoriesPage = () => {
 
-    //Use State - вміє при зміні викликати рендер компонента в якому знаходиться
-    const [list, setList] = useState([]);
-   
+    const [list, setList] = useState([])
 
-    useEffect(()=>{
-        axios.get("http://localhost:5025/api/Categories")
-            .then((res) => {
-                const{data}  = res;
-                console.log("Get list of categories",res.data);
+    useEffect(() => {
+        AxiosInstance.get("/api/Categories")
+            .then(res => {
+                const {data} = res;
+                console.log("Get list of Categories", data);
                 setList(data);
             })
-            .catch((err) => {console.log("Problem error",err)});
+            .catch(err => console.log("Problem", err));
+        console.log('UseEffect APP', "Викликаємо після рендера");
     },[]);
-
 
     return (
         <>
-            <h1 className={"text-center mt-5"}>Categories List</h1>
-            {list.length===0 ? <h1>The List is empty</h1>:
-
-                <table className="table table-bordered mt-5">
+            <h1 className={"text-center"}>Категорії</h1>
+            {list.length === 0 ? <h2>Список пустий</h2> :
+                <table className="table table-bordered">
                     <thead>
-
                     <tr>
-                        <th scope="col">№</th>
-                        <th scope="col">Назва</th>
-                        <th scope="col">Фото</th>
+                        <th>#</th>
+                        <th>Назва</th>
+                        <th>Image</th>
                     </tr>
-
                     </thead>
                     <tbody>
-                    {list.map((item) => (
-                        <tr key={item.id}>
-                            <td>{item.id}</td>
-                            <td>{item.name}</td>
-                            <td><img src={`http://localhost:5025/images/200_${item.image}`} alt={item.name} width={75}/></td>
-                        </tr>
-                    ))
+                    {
+                        list.map((item) => (
+                            <tr key={item.id}>
+                                <td>{item.id}</td>
+                                <td>{item.name}</td>
+                                <td><img src={`${BASE_URL}/images/200_${item.image}`} alt={item.name} width={75}/></td>
+                            </tr>
+                        ))
                     }
-
                     </tbody>
                 </table>
             }
-
-
         </>
-    );
-
-
+    )
 }
 
-
-export  default CategoriesPage;
+export default CategoriesPage;

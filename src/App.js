@@ -1,23 +1,31 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import CategoriesPage from "./pages/Categories";
-import NavBarPage from "./components/NavBar";
 import {Route, Routes} from "react-router-dom";
-import CreatePage from "./pages/Categories/create";
+import CreatePage from "./pages/Categories/Create";
+import NoMatch from "./pages/NoMatch";
+import Layout from "./components/Layout";
+import HomePage from "./pages/Home";
 
 const App = () => {
 
 
 return (
     <>
-        <NavBarPage></NavBarPage>
+        <Layout></Layout>
         <div className={"container mt-5"}>
             <Routes>
-                <Route path={"/"} element={<CategoriesPage/>}></Route>
-                <Route path={"/create"} element={<CreatePage/>}></Route>
-            </Routes>
-        </div>
+                <Route index element={<HomePage/>}/>
 
+                <Route path={"Categories"}>
+                <Route index element={<CategoriesPage/>}></Route>
+                <Route path={"create"} element={<CreatePage/>}></Route>
+
+                </Route>
+
+                <Route path="*" element={<NoMatch/>}></Route>
+            </Routes>
+       </div>
     </>
     )
 
