@@ -11,7 +11,7 @@ const App = () => {
 return (
     <>
         <NavBarPage></NavBarPage>
-        <div className={"container"}>
+        <div className={"container mt-5"}>
             <Routes>
                 <Route path={"/"} element={<CategoriesPage/>}></Route>
                 <Route path={"/create"} element={<CreatePage/>}></Route>
