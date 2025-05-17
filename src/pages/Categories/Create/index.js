@@ -2,6 +2,8 @@ import {useState} from "react";
 import { NavLink } from "react-router-dom";
 import {motion} from "framer-motion";
 import axiosInstance from "../../../api/axiosInstance";
+import BaseTextInput from "../../../components/common/BaseTextInput";
+import BaseFileInput from "../../../components/common/BaseFileInput";
 
 
 const  CreatePage=()=> {
@@ -45,30 +47,28 @@ const  CreatePage=()=> {
             <form  encType="multipart/form-data" onSubmit={handleSubmit} className="p-4 w-75 shadow rounded bg-light">
                 <h4 className="mb-4 text-center">Створення категорії</h4>
 
-                <div className="mb-3">
-                    <label  className="form-label fw-semibold text-dark">Назва категорії</label>
-                    <input  type="text" name={"name"} className="form-control"
-                            placeholder="Введіть назву категорії"
-                            required  onChange={handleChange} />
-                    <span  className="text-danger"></span>
-                </div>
+                <BaseTextInput
+                    label={"Назва категорії"}
+                    field={"name"}
+                    onChange={handleChange}
+                    placeHolder={"Введіть назву категорії"}
+                />
+
+                <BaseTextInput
+                    label={"Url Slug"}
+                    field={"slug"}
+                    onChange={handleChange}
+                    placeHolder={"Введіть slug категорії"}
+                />
 
 
-                <div className="mb-3">
-                    <label  className="form-label fw-semibold text-dark">Slug</label>
-                    <textarea  className="form-control" name={"slug"} rows="2"
-                               placeholder="Введіть slug категорії"  onChange={handleChange}>
-                    </textarea>
-                    <span  className="text-danger"></span>
-                </div>
 
+                <BaseFileInput
+                  label={"URL зображення"}
+                  field={"image"}
+                  onChange={handleChange}
+                />
 
-                <div className="mb-3">
-                    <label  className="form-label fw-semibold text-dark">URL зображення</label>
-                    <input  type="file" name={"image"} className="form-control"
-                            accept="image/*" onChange={handleChange}/>
-                    <span  className="text-danger"></span>
-                </div>
 
                 {
                     response &&
