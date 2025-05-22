@@ -1,19 +1,25 @@
+import classNames from "classnames";
 
+const BaseFileInput = ({field, label, error, touched, onChange}) => {
 
-const  BaseTextInput = ({label,field,onChange}) => {
+    const isError = touched && error;
 
-    return(
+    return (
         <>
             <div className="mb-3">
-                <label  className="form-label fw-semibold text-dark">{label}</label>
-                <input  type="file" name={field} className="form-control"
-                        accept="image/*" onChange={onChange}/>
+                <label htmlFor="imageFile" className="form-label">{label}</label>
+                <input type="file"
+                       className={classNames("form-control", {
+                           "is-invalid": isError
+                       })}
+                       id={field}
+                       name={field}
+                       onChange={onChange}
+                />
+                {isError && <div className="invalid-feedback">{error}</div>}
             </div>
-
-
         </>
-
     )
 }
 
-export default BaseTextInput;
+export default BaseFileInput;

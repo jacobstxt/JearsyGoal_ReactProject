@@ -18,6 +18,7 @@ return (
                 <Route index element={<HomePage/>}/>
 
                 <Route path={"Categories"}>
+
                 <Route index element={<CategoriesPage/>}></Route>
                 <Route path={"create"} element={<CreatePage/>}></Route>
 

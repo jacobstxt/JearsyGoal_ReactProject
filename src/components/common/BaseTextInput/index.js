@@ -1,20 +1,25 @@
+import classNames from "classnames";
 
+const BaseTextInput = ({field, label, value, error, touched, onChange}) => {
 
-const  BaseTextInput = ({label,field,onChange,placeHolder}) => {
+    const isError = touched && error;
 
-    return(
+    return (
         <>
             <div className="mb-3">
-                <label  className="form-label fw-semibold text-dark">{label}</label>
-                <input  type="text" name={field} className="form-control"
-                        placeholder={placeHolder}
-                        onChange={onChange}
-                        required/>
+                <label htmlFor={field} className="form-label">{label}</label>
+                <input type="text"
+                       className={classNames("form-control", {
+                           "is-invalid": isError
+                       })}
+                       name={field}
+                       id={field}
+                       value={value}
+                       onChange={onChange}
+                />
+                {isError && <div className="invalid-feedback">{error}</div>}
             </div>
-
-
         </>
-
     )
 }
 
