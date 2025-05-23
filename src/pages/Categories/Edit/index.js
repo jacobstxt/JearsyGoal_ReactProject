@@ -26,9 +26,7 @@ const EditPage = () => {
     }, [id]);
 
     const  HandleSubmit = (e) => {
-
         e.preventDefault();
-
         const formData = new FormData();
         formData.append("id", data.id);
         formData.append("name", data.name);
@@ -44,9 +42,16 @@ const EditPage = () => {
                 "Content-Type": "multipart/form-data"
             }
         })
-            .then(() => {
+            .then(res => {
                 setSuccessMessage("Категорію успішно редаговано!");
                 setShowMessage(true);
+
+                setData(prev => ({
+                    ...prev,
+                    image: res.data.image,
+                    preview: null
+                }));
+
                 setTimeout(() => {
                     navigate("/Categories");
                 }, 2000);
@@ -54,6 +59,9 @@ const EditPage = () => {
             })
             .catch(err => {
                 console.error("Помилка при оновленні", err);
+                if (err.response && err.response.data) {
+                    console.error("Помилка з сервера:", err.response.data);
+                }
             });
     }
 
@@ -86,8 +94,12 @@ const EditPage = () => {
                         <BaseFileInput
                             label={"Оберіть фото"}
                             field={"imageFile"}
+                            value={data.image}
                             onChange={(e) => {
                                 const file = e.target.files[0];
+                                if (data.preview) {
+                                    URL.revokeObjectURL(data.preview);
+                                }
                                 setData({
                                     ...data,
                                     image: file,
