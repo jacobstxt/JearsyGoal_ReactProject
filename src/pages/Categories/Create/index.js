@@ -9,9 +9,9 @@ import {useFormik} from "formik";
 
 
 const validationSchema = Yup.object().shape({
-    // name: Yup.string().required("Name is required"),
-    // slug: Yup.string().required("Slug is required"),
-    imageFile: Yup.mixed().nullable()
+    name: Yup.string().required("Назва є обов'язковою"),
+    slug: Yup.string().required("Слаг є обов'язковим"),
+    imageFile: Yup.mixed().required("Файл зображення є обов'язковим")
 });
 
 
@@ -60,10 +60,10 @@ const  CreatePage=()=> {
     const handleFormikSubmit = async (values) => {
         console.log("Submit formik", values);
         try {
-             const formData = new FormData();
-             formData.append("name", values.name);
-             formData.append("slug", values.slug);
-             formData.append("image", values.imageFile);
+              const formData = new FormData();
+              formData.append("name", values.name);
+              formData.append("slug", values.slug);
+              formData.append("image", values.imageFile);
 
               await axiosInstance.post(`/api/Categories`, formData,
                 {

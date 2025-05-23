@@ -7,7 +7,7 @@ const BaseFileInput = ({field, label, error, touched, onChange}) => {
     return (
         <>
             <div className="mb-3">
-                <label htmlFor="imageFile" className="form-label">{label}</label>
+                <label htmlFor={field} className="form-label">{label}</label>
                 <input type="file"
                        className={classNames("form-control", {
                            "is-invalid": isError
