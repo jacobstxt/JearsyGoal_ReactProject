@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import AxiosInstance from "../../api/axiosInstance";
 import {BASE_URL} from "../../api/apiConfig";
 import {useNavigate} from "react-router-dom";
-
+import Swal from 'sweetalert2';
 
 const CategoriesPage = () => {
 
@@ -23,6 +23,31 @@ const CategoriesPage = () => {
     const handleEdit = (id) => {
         navigate(`/Categories/Edit/${id}`);
     };
+
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: 'Ви впевнені?',
+            text: "Цю категорію буде видалено назавжди!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Так, видалити!',
+            cancelButtonText: 'Відмінити'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                AxiosInstance.delete(`/api/Categories/${id}`)
+                    .then(() => {
+                        setList(prevList => prevList.filter(item => item.id !== id));
+                        Swal.fire('Видалено!', 'Категорія була успішно видалена.', 'success');
+                    })
+                    .catch(err => {
+                        console.error("Помилка при видаленні", err);
+                        Swal.fire('Помилка', 'Не вдалося видалити категорію.', 'error');
+                    });
+            }
+        });
+    }
 
     return (
         <>
@@ -49,7 +74,7 @@ const CategoriesPage = () => {
                                     <button className="btn btn-lg btn-warning me-2" onClick={() => handleEdit(item.id)}>
                                         Edit
                                     </button>
-                                    <button className="btn btn-lg btn-danger" /*onClick={() => handleDelete(item.id)}*/>
+                                    <button className="btn btn-lg btn-danger" onClick={() => handleDelete(item.id)}>
                                         Delete
                                     </button>
                                     </div>

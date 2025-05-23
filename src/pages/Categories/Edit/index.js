@@ -4,7 +4,7 @@ import AxiosInstance from "../../../api/axiosInstance";
 import {useEffect, useState} from "react";
 import BaseFileInput from "../../../components/common/BaseFileInput";
 import {BASE_URL} from "../../../api/apiConfig";
-import '../../../App.css';
+import Swal from 'sweetalert2';
 
 import * as Yup from "yup";
 import {useFormik} from "formik";
@@ -17,9 +17,7 @@ const validationSchema = Yup.object().shape({
 
 const EditPage = () => {
     const { id } = useParams();
-    const [successMessage, setSuccessMessage] = useState("");
     const [data, setData] = useState({ id: null, name: "", slug: "", image: "", preview: null });
-    const [showMessage, setShowMessage] = useState(false);
     const navigate = useNavigate();
 
 
@@ -47,9 +45,14 @@ const EditPage = () => {
                     }
                 });
 
-                setSuccessMessage("Категорію успішно редаговано!");
-                setShowMessage(true);
-                setTimeout(() => navigate("/Categories"), 2000);
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Успіх',
+                    text: 'Категорію успішно оновлено!',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+                navigate("/Categories")
             } catch (error) {
                 console.error("Send request error", error);
                 const serverErrors = {};
@@ -60,12 +63,18 @@ const EditPage = () => {
                     });
                 }
                 formik.setErrors(serverErrors);
+
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Помилка',
+                    text: 'Не вдалося оновити категорію. Перевірте введені дані.',
+                });
             }
         }
     });
 
 
-    const {values, handleSubmit, errors, touched,setErrors,setValues} = formik;
+    const {values, handleSubmit, errors, touched,setValues} = formik;
 
     useEffect(() => {
         AxiosInstance.get(`/api/Categories/${id}`)
@@ -140,10 +149,6 @@ const EditPage = () => {
 
     return (
         <>
-            <div className={`top-message ${showMessage ? "show" : ""}`}>
-                {successMessage}
-            </div>
-
             <div className="container mt-5">
                 <div className="card shadow rounded-4 p-4">
                     <h2 className="text-center mb-4 text-black">Редагування категорії</h2>

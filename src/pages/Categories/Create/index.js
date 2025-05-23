@@ -2,7 +2,7 @@ import axiosInstance from "../../../api/axiosInstance";
 import BaseTextInput from "../../../components/common/BaseTextInput";
 import BaseFileInput from "../../../components/common/BaseFileInput";
 import {useNavigate} from "react-router-dom";
-
+import Swal from 'sweetalert2';
 
 import * as Yup from "yup";
 import {useFormik} from "formik";
@@ -16,6 +16,7 @@ const validationSchema = Yup.object().shape({
 
 
 const  CreatePage=()=> {
+    const navigate = useNavigate();
 
     // const [data, setData] = useState({ name: "", slug: "",image:""});
     // const [response, setResponse] = useState(null);
@@ -73,6 +74,14 @@ const  CreatePage=()=> {
                     }
 
                 });
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Успіх',
+                text: 'Категорію успішно створено!',
+                timer: 2000,
+                showConfirmButton: false,
+            });
             navigate("..");
 
         } catch(error) {
@@ -98,6 +107,12 @@ const  CreatePage=()=> {
 
             console.log("response", response);
             console.log("serverErrors", serverErrors);
+
+            await Swal.fire({
+                icon: 'error',
+                title: 'Помилка',
+                text: 'Не вдалося створити категорію. Перевірте введені дані.',
+            });
             setErrors(serverErrors);
         }
     }
@@ -111,7 +126,6 @@ const  CreatePage=()=> {
     const {values, handleSubmit, errors, touched,setErrors, handleChange, setFieldValue,setFieldTouched} = formik;
 
 
-    const navigate = useNavigate();
 
     const onHandleFileChange = (e) => {
         const files = e.target.files;
