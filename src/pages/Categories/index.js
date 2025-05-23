@@ -1,10 +1,13 @@
 import {useEffect, useState} from "react";
 import AxiosInstance from "../../api/axiosInstance";
 import {BASE_URL} from "../../api/apiConfig";
+import {useNavigate} from "react-router-dom";
+
 
 const CategoriesPage = () => {
 
     const [list, setList] = useState([])
+    const navigate = useNavigate();
 
     useEffect(() => {
         AxiosInstance.get("/api/Categories")
@@ -17,6 +20,10 @@ const CategoriesPage = () => {
         console.log('UseEffect APP', "Викликаємо після рендера");
     },[]);
 
+    const handleEdit = (id) => {
+        navigate(`/Categories/Edit/${id}`);
+    };
+
     return (
         <>
             <h1 className={"text-center"}>Категорії</h1>
@@ -27,6 +34,7 @@ const CategoriesPage = () => {
                         <th>#</th>
                         <th>Назва</th>
                         <th>Image</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,6 +44,16 @@ const CategoriesPage = () => {
                                 <td>{item.id}</td>
                                 <td>{item.name}</td>
                                 <td><img src={`${BASE_URL}/images/200_${item.image}`} alt={item.name} width={75}/></td>
+                                <td className={"align-middle"}>
+                                    <div className={"d-flex justify-content-center gap-5"}>
+                                    <button className="btn btn-lg btn-warning me-2" onClick={() => handleEdit(item.id)}>
+                                        Edit
+                                    </button>
+                                    <button className="btn btn-lg btn-danger" /*onClick={() => handleDelete(item.id)}*/>
+                                        Delete
+                                    </button>
+                                    </div>
+                                </td>
                             </tr>
                         ))
                     }

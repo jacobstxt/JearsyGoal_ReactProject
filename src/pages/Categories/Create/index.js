@@ -126,8 +126,10 @@ const  CreatePage=()=> {
 
     return (
       <>
-          <h1 className={"text-center"}>Додати категорію</h1>
-            <form onSubmit={handleSubmit} className={"col-md-6 offset-md-3"}>
+          <div className="container mt-5">
+              <div className="card shadow rounded-4 p-4">
+                  <h2 className="text-center mb-4 text-black">Створення категорії</h2>
+            <form onSubmit={handleSubmit} className={"col-md-8 offset-md-2"}>
                 <BaseTextInput
                     label={"Оберіть назву"}
                     field={"name"}
@@ -154,8 +156,15 @@ const  CreatePage=()=> {
                     onChange={onHandleFileChange}
                 />
 
-                <button type="submit" className="btn btn-primary">Додати</button>
+                <div className="text-center mt-4">
+                    <button type="submit" className="btn btn-success px-4 py-2 fs-5 rounded-pill shadow-sm">
+                        Додати
+                    </button>
+                </div>
              </form>
+
+              </div>
+          </div>
       </>
 
         // <div className="container d-flex justify-content-center">

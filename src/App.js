@@ -6,6 +6,7 @@ import CreatePage from "./pages/Categories/Create";
 import NoMatch from "./pages/NoMatch";
 import Layout from "./components/Layout";
 import HomePage from "./pages/Home";
+import EditPage from "./pages/Categories/Edit";
 
 const App = () => {
 
@@ -21,6 +22,7 @@ return (
 
                 <Route index element={<CategoriesPage/>}></Route>
                 <Route path={"create"} element={<CreatePage/>}></Route>
+                <Route path={"edit/:id"} element={<EditPage/>}></Route>
 
                 </Route>
 
