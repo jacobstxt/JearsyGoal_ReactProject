@@ -1,6 +1,18 @@
-import {NavLink, Outlet} from "react-router-dom";
+import {NavLink, Outlet, useNavigate} from "react-router-dom";
+import {useAuthStore} from "../../store/authStore";
+import {BASE_URL} from "../../api/apiConfig";
 
 const NavBarPage = ()=> {
+    const navigate = useNavigate();
+
+    const { user, logout } = useAuthStore((state) => state);
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    }
+
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -26,14 +38,27 @@ const NavBarPage = ()=> {
 
 
                         <ul className="navbar-nav ms-auto">
-                            <li className="nav-item active">
-                                <NavLink to="Account/Login"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                                    Login</NavLink>
-                            </li>
-                            <li className="nav-item active">
-                                <NavLink to="Account/SignUp"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                                    Sign Up</NavLink>
-                            </li>
+                            {user ? (
+                                <div className="flex items-center gap-2">
+                                    <img src={`${BASE_URL}/images/50_${user.image}`} alt="Avatar" className="rounded-circle mx-3" />
+                                    <span className={"mx-3 text-white"}>{user.email}</span>
+                                    <button className={"mx-3 btn btn btn-light"} onClick={handleLogout}>Вийти</button>
+                                </div>
+                            ) : (
+                                <>
+                                    <li className="nav-item">
+                                        <NavLink to="/Account/Login" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                            Sign in
+                                        </NavLink>
+                                    </li>
+
+                                    <li className="nav-item">
+                                        <NavLink to="/Account/SignUp" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                            Sign Up
+                                        </NavLink>
+                                    </li>
+                                </>
+                            )}
                         </ul>
 
                     </div>
