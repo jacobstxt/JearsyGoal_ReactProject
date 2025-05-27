@@ -14,12 +14,28 @@ const NavBarPage = ()=> {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav">
                             <li className="nav-item active">
-                                <NavLink to="/Categories"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Categories</NavLink>
+                                <NavLink to="/Categories"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                    Categories</NavLink>
                             </li>
                             <li className="nav-item active">
-                                <NavLink to="/Categories/Create"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Add Category</NavLink>
+                                <NavLink to="/Categories/Create"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                    Add Category</NavLink>
                             </li>
                         </ul>
+
+
+
+                        <ul className="navbar-nav ms-auto">
+                            <li className="nav-item active">
+                                <NavLink to="Account/Login"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                    Login</NavLink>
+                            </li>
+                            <li className="nav-item active">
+                                <NavLink to="Account/SignUp"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+                                    Sign Up</NavLink>
+                            </li>
+                        </ul>
+
                     </div>
                 </div>
             </nav>

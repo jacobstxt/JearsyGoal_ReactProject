@@ -7,8 +7,23 @@ import NoMatch from "./pages/NoMatch";
 import Layout from "./components/Layout";
 import HomePage from "./pages/Home";
 import EditPage from "./pages/Categories/Edit";
+import LoginPage from "./pages/Account/Login";
+import {useAuthStore} from "./store/authStore";
+import {useEffect} from "react";
+import {jwtDecode} from "jwt-decode";
 
 const App = () => {
+
+
+    const { setUser } = useAuthStore((state) => state);
+
+    useEffect(() => {
+        const token = localStorage.getItem("jwt");
+        if (token) {
+            const decoded = jwtDecode(token);
+            setUser(decoded);
+        }
+    },[]);
 
 
 return (
@@ -18,6 +33,7 @@ return (
             <Routes>
                 <Route index element={<HomePage/>}/>
 
+
                 <Route path={"Categories"}>
 
                 <Route index element={<CategoriesPage/>}></Route>
@@ -25,6 +41,13 @@ return (
                 <Route path={"edit/:id"} element={<EditPage/>}></Route>
 
                 </Route>
+
+
+                <Route path={"Account"}>
+                    <Route path={"login"} element={<LoginPage/>}></Route>
+                </Route>
+
+
 
                 <Route path="*" element={<NoMatch/>}></Route>
             </Routes>
