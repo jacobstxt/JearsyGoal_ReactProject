@@ -11,6 +11,8 @@ import LoginPage from "./pages/Account/Login";
 import {useAuthStore} from "./store/authStore";
 import {useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
+import ProductsPage from "./pages/Products";
+import ProductPage from "./pages/Products/Product";
 
 const App = () => {
 
@@ -40,6 +42,12 @@ return (
                 <Route path={"create"} element={<CreatePage/>}></Route>
                 <Route path={"edit/:id"} element={<EditPage/>}></Route>
 
+                </Route>
+
+
+                <Route path={"Products"}>
+                    <Route index element={<ProductsPage/>}></Route>
+                    <Route path={"Product/:id"} element={<ProductPage/>} />
                 </Route>
 
 

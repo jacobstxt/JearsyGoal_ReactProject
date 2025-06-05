@@ -33,6 +33,12 @@ const NavBarPage = ()=> {
                                 <NavLink to="/Categories/Create"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
                                     Add Category</NavLink>
                             </li>
+
+                            <li className="nav-item active">
+                                <NavLink to="/Products" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                    Products
+                                </NavLink>
+                            </li>
                         </ul>
 
 
