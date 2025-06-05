@@ -29,16 +29,22 @@ const NavBarPage = ()=> {
                                 <NavLink to="/Categories"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
                                     Categories</NavLink>
                             </li>
-                            <li className="nav-item active">
-                                <NavLink to="/Categories/Create"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                                    Add Category</NavLink>
-                            </li>
+                            {/*<li className="nav-item active">*/}
+                            {/*    <NavLink to="/Categories/Create"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>*/}
+                            {/*        Add Category</NavLink>*/}
+                            {/*</li>*/}
 
                             <li className="nav-item active">
                                 <NavLink to="/Products" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
                                     Products
                                 </NavLink>
                             </li>
+
+                            {/*<li className="nav-item active">*/}
+                            {/*    <NavLink to="/Products/Create" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>*/}
+                            {/*        Create Product*/}
+                            {/*    </NavLink>*/}
+                            {/*</li>*/}
                         </ul>
 
 

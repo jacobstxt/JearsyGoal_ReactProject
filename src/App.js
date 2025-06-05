@@ -13,6 +13,7 @@ import {useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
 import ProductsPage from "./pages/Products";
 import ProductPage from "./pages/Products/Product";
+import CreateProductPage from "./pages/Products/Create";
 
 const App = () => {
 
@@ -37,7 +38,6 @@ return (
 
 
                 <Route path={"Categories"}>
-
                 <Route index element={<CategoriesPage/>}></Route>
                 <Route path={"create"} element={<CreatePage/>}></Route>
                 <Route path={"edit/:id"} element={<EditPage/>}></Route>
@@ -47,7 +47,8 @@ return (
 
                 <Route path={"Products"}>
                     <Route index element={<ProductsPage/>}></Route>
-                    <Route path={"Product/:id"} element={<ProductPage/>} />
+                    <Route path={"product/:id"} element={<ProductPage/>} />
+                    <Route path={"create"} element={<CreateProductPage/>} />
                 </Route>
 
 

@@ -20,6 +20,7 @@
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
     "react-scripts": "5.0.1",
+    "sortablejs": "^1.15.6",
     "sweetalert2": "^11.21.2",
     "web-vitals": "^2.1.4",
     "yup": "^1.6.1",

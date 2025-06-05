@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import {BASE_URL} from "../../api/apiConfig";
 import {Card,Button,Col,Row,Spinner,Container} from "react-bootstrap";
@@ -9,6 +9,7 @@ const ProductsPage = () => {
     const [list, setList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [groupedProducts, setGroupedProducts] = useState([]);
+    const  navigate = useNavigate();
 
     useEffect(() => {
         axiosInstance.get("/api/Products")
@@ -86,7 +87,24 @@ const ProductsPage = () => {
             //</Row>
        // </Container>
 
+
         <Container className="my-4">
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="text-center">Продукти</h1>
+                <button
+                    className="btn btn-lg btn-success d-flex align-items-center gap-2 px-4 py-2"
+                    style={{
+                        transition: 'all 0.3s ease',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                    onClick={() => navigate('Create')}>
+                    <span style={{fontWeight: 'bold'}}>Додати продукт</span>
+                </button>
+            </div>
+
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
             {groupedProducts.map(product => (
                 <Col key={product.slug}>
