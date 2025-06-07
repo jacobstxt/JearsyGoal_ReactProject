@@ -1,86 +1,186 @@
-import React, { useEffect, useRef } from 'react';
-import Sortable from 'sortablejs';
-import './ImageUploader.css';
+// import { Upload, Button, Space } from 'antd';
+// import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+//
+// import { UploadOutlined, DeleteOutlined } from '@ant-design/icons';
+//
+// const ImageUploaderSortable = ({fileList,setFileList}) => {
+//     // const [fileList, setFileList] = useState([]);
+//
+//     const onUploadChange = ({ fileList: newList }) => {
+//         setFileList(newList.filter(f => f.status !== 'removed'));
+//     };
+//
+//     const beforeUpload = () => false; // блокує автозавантаження
+//
+//     const onDragEnd = (result) => {
+//         if (!result.destination) return;
+//         const items = Array.from(fileList);
+//         const [moved] = items.splice(result.source.index, 1);
+//         items.splice(result.destination.index, 0, moved);
+//         setFileList(items);
+//     };
+//
+//     const removeFile = (index) => {
+//         const newList = [...fileList];
+//         newList.splice(index, 1);
+//         setFileList(newList);
+//     };
+//
+//     console.log("list files", fileList);
+//
+//     return(
+//         <div>
+//             <Upload
+//                 multiple
+//                 beforeUpload={beforeUpload}
+//                 fileList={fileList}
+//                 onChange={onUploadChange}
+//                 showUploadList={false} // приховати стандартний список
+//             >
+//                 <Button icon={<UploadOutlined />}>Вибрати файли</Button>
+//             </Upload>
+//
+//             <DragDropContext onDragEnd={onDragEnd}>
+//                 <Droppable droppableId="file-list">
+//                     {(provided) => (
+//                         <div
+//                             {...provided.droppableProps}
+//                             ref={provided.innerRef}
+//                             style={{ marginTop: 16, background: '#fafafa', padding: 8, borderRadius: 8 }}
+//                         >
+//                             {fileList.map((file, index) => (
+//                                 <Draggable key={file.uid} draggableId={file.uid} index={index}>
+//                                     {(provided, snapshot) => (
+//                                         <div
+//                                             ref={provided.innerRef}
+//                                             {...provided.draggableProps}
+//                                             {...provided.dragHandleProps}
+//                                             style={{
+//                                                 background: snapshot.isDragging ? '#e6f7ff' : '#fff',
+//                                                 border: '1px solid #d9d9d9',
+//                                                 padding: 10,
+//                                                 marginBottom: 8,
+//                                                 borderRadius: 4,
+//                                                 display: 'flex',
+//                                                 justifyContent: 'space-between',
+//                                                 alignItems: 'center',
+//                                                 ...provided.draggableProps.style,
+//                                             }}
+//                                         >
+//                                             <span>{index + 1}.</span>
+//                                             <img src={URL.createObjectURL(file.originFileObj)} height={75} alt=""/>
+//                                             <Button
+//                                                 type="text"
+//                                                 icon={<DeleteOutlined />}
+//                                                 danger
+//                                                 onClick={() => removeFile(index)}
+//                                             />
+//                                         </div>
+//                                     )}
+//                                 </Draggable>
+//                             ))}
+//                             {provided.placeholder}
+//                         </div>
+//                     )}
+//                 </Droppable>
+//             </DragDropContext>
+//
+//         </div>
+//     )
+// }
+//
+// export default ImageUploaderSortable;
 
-const ImageUploaderSortable = ({ images, setImages }) => {
-    const imageListRef = useRef(null);
-    const fileInputRef = useRef(null);
-    const imagesRef = useRef(images); // зберігаємо поточний масив
 
-    // завжди актуалізуємо ref до images
-    useEffect(() => {
-        imagesRef.current = images;
-    }, [images]);
+import {Upload, Button, Modal} from 'antd';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
-    useEffect(() => {
-        const sortable = new Sortable(imageListRef.current, {
-            animation: 150,
-            ghostClass: 'opacity-50',
-            onEnd: (evt) => {
-                const currentImages = [...imagesRef.current];
-                const [moved] = currentImages.splice(evt.oldIndex, 1);
-                currentImages.splice(evt.newIndex, 0, moved);
-                setImages(currentImages);
-            }
-        });
+import { UploadOutlined } from '@ant-design/icons';
+import {useState} from "react";
 
-        return () => sortable.destroy();
-    }, [setImages]); // ⚠️ НЕ `[images, setImages]`
+const ImageUploaderSortable = ({ fileList, setFileList }) => {
 
-    const handleFiles = (event) => {
-        const files = event.target.files;
-        const newImages = [];
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState("");
 
-        Array.from(files).forEach((file) => {
-            if (!file.type.startsWith('image/')) return;
-            newImages.push( file );
-        });
-        //
-        setImages((prev) => [...prev, ...newImages]);
-        fileInputRef.current.value = '';
+    const onUploadChange = ({ fileList: newList }) => {
+        setFileList(newList.filter(f => f.status !== 'removed'));
     };
 
-    const handleDelete = (index) => {
-        setImages((prev) => prev.filter((_, i) => i !== index));
+    const beforeUpload = () => false; // блокує автозавантаження
+
+    const onDragEnd = (result) => {
+        if (!result.destination) return;
+        const items = Array.from(fileList);
+        const [moved] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, moved);
+        setFileList(items);
     };
 
-    return (
+    console.log("list files", fileList);
+
+    return(
         <div>
-            <input
-                type="file"
+            <Upload
                 multiple
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={handleFiles}
-                className="form-control mb-3"
-            />
-            <div
-                ref={imageListRef}
-                className="row g-2"
-                id="imageList"
+                beforeUpload={beforeUpload}
+                fileList={fileList}
+                onChange={onUploadChange}
+                showUploadList={false} // приховати стандартний список
             >
-                {images.map((img, index) => (
-                    <div className="col-3" key={index}>
-                        <div className="position-relative">
-                            <img
-                                src={URL.createObjectURL(img)}
-                                alt="preview"
-                                className="img-fluid rounded border"
-                                style={{ height: '100px', objectFit: 'cover' }}
-                            />
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                                onClick={() => handleDelete(index)}
-                            >
-                                &times;
-                            </button>
+                <Button icon={<UploadOutlined />}>Вибрати файли</Button>
+            </Upload>
+
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="upload-list" direction={"horizontal"}>
+                    {(provided) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className={"d-flex flex-wrap gap-2"}
+                        >
+                            {fileList.map((file, index) => (
+                                <Draggable key={file.uid} draggableId={file.uid} index={index}>
+                                    {(provided, snapshot) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                        >
+                                            <Upload
+                                                listType="picture-card"
+                                                fileList={[file]}
+                                                onRemove={() => {
+                                                    const newFileList = fileList.filter(f => f.uid !== file.uid);
+                                                    setFileList(newFileList);
+                                                }}
+                                                onPreview={(file) => {
+                                                    if (!file.url && !file.preview) {
+                                                        file.preview = URL.createObjectURL(file.originFileObj);
+                                                    }
+
+                                                    setPreviewImage(file.url || (file.preview));
+                                                    setPreviewOpen(true);
+
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
                         </div>
-                    </div>
-                ))}
-            </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
+
+            <Modal open={previewOpen} footer={null} onCancel={() => setPreviewOpen(false)}>
+                <img alt="example" style={{ width: "100%" }} src={previewImage} />
+            </Modal>
+
         </div>
-    );
-};
+    )
+}
+
 
 export default ImageUploaderSortable;

@@ -53,41 +53,6 @@ const ProductsPage = () => {
     }
 
     return (
-        //<Container className="my-4">
-          //  <h2 className="mb-4 text-center">Продукти</h2>
-           // <Row xs={1} sm={2} md={3} lg={4} className="g-4">
-              //  {groupedProducts.map(product => (
-              //      <Col key={product.slug}>
-                   //     <Card className="h-100">
-                           // <Card.Img
-                            //    variant="top"
-                             //   src={`${BASE_URL}/images/800_${product.productImages?.[0]?.name}`}
-                              //  alt={product.name}
-                              //  style={{ objectFit: 'cover', height: '180px' }}
-                        //    />
-                          //  <Card.Body className="d-flex flex-column">
-                            //    <Card.Title>{product.name}</Card.Title>
-
-                             //   {product.sizes?.map((size, index) => (
-                             //       <div key={index} className="d-flex justify-content-between">
-                             //           <span>{size.sizeName} см</span>
-                              //          <strong>{size.price} грн</strong>
-                              //      </div>
-                               // ))}
-                              //  <br/>
-                               // <div className="mt-auto d-grid">
-                                  //  <Button variant="primary">
-                                   //     <Link to={`product/${product.id}`} className={"text-white text-decoration-none"}>Show</Link>
-                                  //  </Button>
-                              //  </div>
-                         //   </Card.Body>
-                       // </Card>
-                //    </Col>
-               // ))}
-            //</Row>
-       // </Container>
-
-
         <Container className="my-4">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="text-center">Продукти</h1>
@@ -137,6 +102,9 @@ const ProductsPage = () => {
                             <div className="mt-auto">
                                 <Link to={`product/${product.id}`} className="btn btn-outline-success w-100">
                                     Переглянути
+                                </Link>
+                                <Link to={`edit/${product.id}`} className="btn btn-outline-success mt-2 w-100">
+                                    Редагувати
                                 </Link>
                             </div>
                         </Card.Body>

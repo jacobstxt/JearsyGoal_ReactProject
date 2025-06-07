@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import ImageUploaderSortable from "../../../components/ProductCreatePage/ImageUploaderSortable";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Swal from 'sweetalert2';
 
 
-const CreateProductPage = () => {
+const EditProductPage = () => {
+    const { id } = useParams();
     const [productData, setProductData] = useState({
         name: "",
         slug: "",
@@ -99,7 +100,7 @@ const CreateProductPage = () => {
     return (
 
         <div className="container mt-5">
-            <h2 className="mb-4">Створення продукту</h2>
+            <h2 className="mb-4">Редагування продукту</h2>
             <div className="row">
 
                 {errorMessage && (
@@ -224,4 +225,4 @@ const CreateProductPage = () => {
     );
 };
 
-export default CreateProductPage;
+export default EditProductPage;

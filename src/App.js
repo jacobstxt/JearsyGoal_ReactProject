@@ -14,7 +14,7 @@ import {jwtDecode} from "jwt-decode";
 import ProductsPage from "./pages/Products";
 import ProductPage from "./pages/Products/Product";
 import CreateProductPage from "./pages/Products/Create";
-
+import EditProductPage from "./pages/Products/Edit";
 const App = () => {
 
 
@@ -49,13 +49,13 @@ return (
                     <Route index element={<ProductsPage/>}></Route>
                     <Route path={"product/:id"} element={<ProductPage/>} />
                     <Route path={"create"} element={<CreateProductPage/>} />
+                    <Route path={"edit/:id"} element={<EditProductPage/>} />
                 </Route>
 
 
                 <Route path={"Account"}>
                     <Route path={"login"} element={<LoginPage/>}></Route>
                 </Route>
-
 
 
                 <Route path="*" element={<NoMatch/>}></Route>
