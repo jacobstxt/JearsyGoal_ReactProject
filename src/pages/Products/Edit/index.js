@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../../api/axiosInstance";
-import ImageUploaderSortable from "../../../components/ProductCreatePage/ImageUploaderSortable";
 import {useNavigate, useParams} from "react-router-dom";
-import Swal from 'sweetalert2';
-
+import {BASE_URL} from "../../../api/apiConfig";
+import ImageUploaderSortable from "../../../components/ProductCreatePage/ImageUploaderSortable";
 
 const EditProductPage = () => {
     const { id } = useParams();
+
+
+
     const [productData, setProductData] = useState({
         name: "",
         slug: "",
@@ -23,9 +25,33 @@ const EditProductPage = () => {
     const [categories, setCategories] = useState([]);
     const [ingredients, setIngredients] = useState([]);
 
-    const  navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [errorMessage, setErrorMessage] = useState(null);
+
+
+    useEffect(() => {
+        if (!id) return;
+
+        axiosInstance.get(`/api/Products/id/${id}`)
+            .then(res => {
+                const current = res.data;
+                const { productImages } = res.data;
+                console.log("current", current);
+                console.log("productImages", productImages);
+
+                const updatedFileList = productImages?.map((image) => ({
+                    uid: image.id.toString(),
+                    name: image.name,
+                    url: `${BASE_URL}/images/800_${image.name}`,
+                    originFileObj: new File([new Blob([''])],image.name,{type: 'old-image'})
+                })) || [];
+
+                setImages(updatedFileList);
+
+            })
+            .catch(err => console.error("Error loading product", err));
+    }, [id]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,6 +62,7 @@ const EditProductPage = () => {
                     axiosInstance.get("/api/Products/ingredients"),
                 ]);
 
+                console.log("Categories", categoriesRes.data);
                 setSizes(Array.isArray(sizesRes.data) ? sizesRes.data : []);
                 setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
                 setIngredients(Array.isArray(ingredientsRes.data) ? ingredientsRes.data : []);
@@ -60,47 +87,30 @@ const EditProductPage = () => {
         });
     };
 
-    const handleCreateProduct = async () => {
+    const handleEditProduct = async () => {
         try {
-           console.log("Images", images);
-           productData.imageFiles = images.map(x=>x.originFileObj);
-           console.log("productData", productData);
+            //console.log("Images", images);
+            productData.id=id;
+            productData.imageFiles = images.map(x=>x.originFileObj);
+            console.log("productData", productData);
+            const res = await axiosInstance.put("/api/Products/edit", productData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            navigate("..");
+            console.log("Продукт:", res.data);
 
-           console.log("Send Data server", images);
-
-           const res = await axiosInstance.post("/api/Products/create", productData, {
-              headers: {
-                "Content-Type": "multipart/form-data"
-              }
-           });
-
-
-           await Swal.fire({
-            icon: 'success',
-            title: 'Успіх',
-            text: 'Продукт успішно створено!',
-            timer: 2000,
-            showConfirmButton: false,
-           });
-
-           navigate("..");
-           console.log("Продукт:", res.data);
-
-    } catch (err) {
-        setErrorMessage(err);
-        console.error(err);
-        await Swal.fire({
-            icon: 'error',
-            title: 'Помилка',
-            text: 'Не вдалося створити продукт. Перевірте введені дані.',
-        });
-    }
+        } catch (err) {
+            setErrorMessage(err);
+            console.error(err);
+        }
     };
 
     return (
 
         <div className="container mt-5">
-            <h2 className="mb-4">Редагування продукту</h2>
+            <h2 className="mb-4">Змінити продукту</h2>
             <div className="row">
 
                 {errorMessage && (
@@ -115,7 +125,10 @@ const EditProductPage = () => {
 
                 <div className="col-md-6 mb-4">
                     <div className="border rounded p-3 h-100">
+                        {/*<ImageUploaderSortable images={images} setImages={setImages} />*/}
                         <ImageUploaderSortable fileList={images} setFileList={setImages} />
+
+
                     </div>
                 </div>
 
@@ -187,8 +200,8 @@ const EditProductPage = () => {
                                 ))}
                             </select>
                         </div>
-                        <button className="btn btn-success" onClick={handleCreateProduct}>
-                            Додати продукт
+                        <button className="btn btn-success" onClick={handleEditProduct}>
+                            Оновити продукт
                         </button>
                     </div>
                 </div>
