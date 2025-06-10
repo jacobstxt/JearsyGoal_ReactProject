@@ -3,6 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import {BASE_URL} from "../../api/apiConfig";
 import {Card,Button,Col,Row,Spinner,Container} from "react-bootstrap";
+import {Modal} from "antd";
 
 
 const ProductsPage = () => {
@@ -10,6 +11,9 @@ const ProductsPage = () => {
     const [loading, setLoading] = useState(true);
     const [groupedProducts, setGroupedProducts] = useState([]);
     const  navigate = useNavigate();
+
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [id, setDeleteId] = useState(null);
 
     useEffect(() => {
         axiosInstance.get("/api/Products")
@@ -51,6 +55,34 @@ const ProductsPage = () => {
             </div>
         );
     }
+
+
+    const showDeleteModal = (id) => {
+        setDeleteId(id);
+        setIsDeleteModalVisible(true);
+    };
+
+    const handleDeleteModalOk = async () => {
+        try {
+            if (!id) return;
+
+            await axiosInstance.delete(`/api/Products/${id}`);
+
+            setGroupedProducts(prev =>
+                prev.filter(product => product.id !== id)
+            );
+
+            handleDeleteModalCancel();
+            setDeleteId(null);
+        } catch (error) {
+            console.log("Помилка при видаленні продукту", error);
+        }
+    };
+
+    const handleDeleteModalCancel = () => {
+        setIsDeleteModalVisible(false);
+    };
+
 
     return (
         <Container className="my-4">
@@ -99,19 +131,33 @@ const ProductsPage = () => {
                                 ))}
                             </div>
 
-                            <div className="mt-auto">
-                                <Link to={`product/${product.id}`} className="btn btn-outline-success w-100">
+                            <div className="mt-auto d-flex flex-column gap-2">
+                                <Link to={`product/${product.id}`} className="btn btn-success w-100">
                                     Переглянути
                                 </Link>
-                                <Link to={`edit/${product.id}`} className="btn btn-outline-success mt-2 w-100">
+                                <Link to={`edit/${product.id}`} className="btn btn-info w-100">
                                     Редагувати
                                 </Link>
+                                <Link
+                                    className="btn btn-danger w-100" onClick={() => showDeleteModal(product.id)}>
+                                    Видалити
+                                </Link>
                             </div>
+
                         </Card.Body>
                     </Card>
                 </Col>
             ))}
         </Row>
+            <Modal
+                title="Ви впевнені, що хочете видалити цей продукт?"
+                open={isDeleteModalVisible}
+                onOk={handleDeleteModalOk}
+                onCancel={handleDeleteModalCancel}
+                okText="Видалити"
+                cancelText="Скасувати"
+            >
+            </Modal>
         </Container>
     );
 

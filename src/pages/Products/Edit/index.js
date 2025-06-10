@@ -3,6 +3,7 @@ import axiosInstance from "../../../api/axiosInstance";
 import {useNavigate, useParams} from "react-router-dom";
 import {BASE_URL} from "../../../api/apiConfig";
 import ImageUploaderSortable from "../../../components/ProductCreatePage/ImageUploaderSortable";
+import {Input, Modal} from "antd";
 
 const EditProductPage = () => {
     const { id } = useParams();
@@ -17,7 +18,6 @@ const EditProductPage = () => {
         productSizeId: "",
         categoryId: "",
         ingredientIds: [],
-
     });
     const [images, setImages] = useState([]);
 
@@ -30,6 +30,13 @@ const EditProductPage = () => {
     const [errorMessage, setErrorMessage] = useState(null);
 
 
+    const [isIngModalVisible, setIsIngModalVisible] = useState(false);
+    const[newIngredient, setNewIngredient] = useState({
+        name: "",
+        imageFile : null
+    });
+
+
     useEffect(() => {
         if (!id) return;
 
@@ -37,8 +44,8 @@ const EditProductPage = () => {
             .then(res => {
                 const current = res.data;
                 const { productImages } = res.data;
-                console.log("current", current);
-                console.log("productImages", productImages);
+                // console.log("current", current);
+                // console.log("productImages", productImages);
 
                 const updatedFileList = productImages?.map((image) => ({
                     uid: image.id.toString(),
@@ -48,6 +55,22 @@ const EditProductPage = () => {
                 })) || [];
 
                 setImages(updatedFileList);
+
+                setProductData({
+                    ...productData,
+                    ...current,
+                    categoryId: current.category.id,
+                    productSizeId: current.productSize.id,
+                    ingredientIds: current.ingridients.map(p => p.id)
+
+                    // name: current.name || "",
+                    // slug: current.slug || "",
+                    // price: current.price || "",
+                    // weight: current.weight || "",
+                    // productSizeId: current.productSizeId || "",
+                    // categoryId: current.categoryId || "",
+                    // ingredientIds: current.ingredientIds || [],
+                });
 
             })
             .catch(err => console.error("Error loading product", err));
@@ -62,7 +85,7 @@ const EditProductPage = () => {
                     axiosInstance.get("/api/Products/ingredients"),
                 ]);
 
-                console.log("Categories", categoriesRes.data);
+                // console.log("Categories", categoriesRes.data);
                 setSizes(Array.isArray(sizesRes.data) ? sizesRes.data : []);
                 setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
                 setIngredients(Array.isArray(ingredientsRes.data) ? ingredientsRes.data : []);
@@ -87,12 +110,41 @@ const EditProductPage = () => {
         });
     };
 
+
+    const showIngModal = () => {
+        setIsIngModalVisible(true);
+    };
+
+    const handleIngModalOk = async () => {
+        try {
+            const res = await axiosInstance.post("/api/Products/ingredients", newIngredient, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            const newIng = res.data;
+            setIngredients(prev => [...prev, newIng]);
+            setIsIngModalVisible(false);
+        } catch (error) {
+            console.log("Помилка при створенні інгредієнта");
+        }
+
+    };
+
+    const handleIngModalCancel = () => {
+        setIsIngModalVisible(false);
+        newIngredient.name = "";
+        newIngredient.imageFile = null;
+    };
+
+
     const handleEditProduct = async () => {
         try {
             //console.log("Images", images);
             productData.id=id;
             productData.imageFiles = images.map(x=>x.originFileObj);
-            console.log("productData", productData);
+            // console.log("productData", productData);
             const res = await axiosInstance.put("/api/Products/edit", productData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
@@ -229,11 +281,53 @@ const EditProductPage = () => {
                             {ing.name}
                         </div>
                     ))}
+
+                    <div
+                        onClick={() => showIngModal()}
+                        style={{
+                            cursor: "pointer",
+                            userSelect: "none",
+                            padding: "5px 10px",
+                            borderRadius: "5px",
+                            border: "1px solid black",
+                            backgroundColor: "gray",
+                            marginRight: 8,
+                            marginBottom: 8
+                        }}
+                    >+
+                    </div>
+
+
                     {productData.ingredientIds.length === 0 && (
                         <span className="text-muted">Жодного інгредієнта не додано</span>
                     )}
                 </div>
             </div>
+
+
+            <Modal
+                title="Додати інгредієнт"
+                open={isIngModalVisible}
+                onOk={handleIngModalOk}
+                onCancel={handleIngModalCancel}
+                okText="Додати"
+                cancelText="Скасувати"
+            >
+                <Input
+                    placeholder="Назва інгредієнта"
+                    value={newIngredient.name}
+                    onChange={(e) => setNewIngredient({...newIngredient, name: e.target.value})}
+                />
+
+                <Input
+                    type="file"
+                    className={`form-control mt-4`}
+                    onChange={(e) => setNewIngredient({...newIngredient, imageFile: e.target.files[0]})}
+                    accept="image/*"
+
+                />
+            </Modal>
+
         </div>
     );
 };
