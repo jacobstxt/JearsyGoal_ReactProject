@@ -1,16 +1,59 @@
 import {NavLink, Outlet, useNavigate} from "react-router-dom";
 import {useAuthStore} from "../../store/authStore";
 import {BASE_URL} from "../../api/apiConfig";
+import {useCartStore} from "../../store/CartStore";
+import {useState} from "react";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faShoppingCart} from "@fortawesome/free-solid-svg-icons";
+import {Button, Modal} from "antd";
 
 const NavBarPage = ()=> {
+
     const navigate = useNavigate();
 
+    const items = useCartStore((state) => state.items);
+
+    const [isCartModalVisible, setIsCartModalVisible] = useState(false);
+    const addItem = useCartStore((state) => state.addItem);
+    const removeItem = useCartStore((state) => state.removeItem);
+
+
+
     const { user, logout } = useAuthStore((state) => state);
+
+    const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
 
     const handleLogout = () => {
         logout();
         navigate("/");
     }
+
+    const showCartModal = (id) => {
+        setIsCartModalVisible(true);
+    };
+
+    const handleCartModalOk = () => {
+        handleCartModalCancel();
+    };
+
+    const handleCartModalCancel = () => {
+        setIsCartModalVisible(false);
+    };
+
+    const handleIncrement = (productId, quantity) => {
+        addItem(productId, quantity + 1);
+    };
+
+    const handleDecrement = (productId, quantity) => {
+        if (quantity > 1) {
+            addItem(productId, quantity - 1);
+        } else {
+            console.log("REMOVE");
+            removeItem(productId);
+        }
+    };
+
 
 
     return (
@@ -29,22 +72,11 @@ const NavBarPage = ()=> {
                                 <NavLink to="/Categories"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
                                     Categories</NavLink>
                             </li>
-                            {/*<li className="nav-item active">*/}
-                            {/*    <NavLink to="/Categories/Create"  className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>*/}
-                            {/*        Add Category</NavLink>*/}
-                            {/*</li>*/}
-
                             <li className="nav-item active">
                                 <NavLink to="/Products" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
                                     Products
                                 </NavLink>
                             </li>
-
-                            {/*<li className="nav-item active">*/}
-                            {/*    <NavLink to="/Products/Create" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>*/}
-                            {/*        Create Product*/}
-                            {/*    </NavLink>*/}
-                            {/*</li>*/}
                         </ul>
 
 
@@ -71,10 +103,58 @@ const NavBarPage = ()=> {
                                     </li>
                                 </>
                             )}
+
+                            <li className="nav-item position-relative">
+                                <button onClick={showCartModal} className="btn btn-dark mt-2 position-relative">
+                                    <FontAwesomeIcon icon={faShoppingCart} />
+                                    {totalCount > 0 && (
+                                        <span
+                                            className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                            style={{ fontSize: "0.6rem" }}
+                                        >
+                                        {totalCount}
+                                    </span>
+                                    )}
+                                </button>
+                            </li>
                         </ul>
 
                     </div>
                 </div>
+                <Modal
+                    title="Ваш кошик"
+                    open={isCartModalVisible}
+                    onOk={handleCartModalOk}
+                    onCancel={handleCartModalCancel}
+                    okText="Оформити"
+                    cancelText="Закрити"
+                    width={700}
+                >
+                    {items.length === 0 ? (
+                        <p>Кошик порожній</p>
+                    ) : (
+                        <div>
+                            {items.map(item => (
+                                <div className="d-flex align-items-center mb-3 border-bottom pb-2">
+                                    <NavLink to={`products/product/${item.productId}`} onClick={()=>{setIsCartModalVisible(false)}}>
+                                        <img src={`${BASE_URL}/images/200_${item.imageName}`} alt={item.name} width="50"  className="me-3"/>
+                                    </NavLink>
+
+                                    <div className="flex-grow-1">
+                                        <div><strong>{item.name}</strong></div>
+                                        <div className="text-muted">{item.categoryName}</div>
+                                        <div>Ціна: {item.price} грн</div>
+                                    </div>
+                                    <div className="d-flex align-items-center">
+                                        <Button onClick={() => handleDecrement(item.productId, item.quantity)}>-</Button>
+                                        <span className="mx-2">{item.quantity}</span>
+                                        <Button onClick={() => handleIncrement(item.productId, item.quantity)}>+</Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Modal>
             </nav>
 
             <div className="container">

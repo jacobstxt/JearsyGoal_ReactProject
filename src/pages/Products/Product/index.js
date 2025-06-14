@@ -1,15 +1,23 @@
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import {BASE_URL} from "../../../api/apiConfig";
 import {Spinner} from "react-bootstrap";
 import "./Style.css";
+import {useCartStore} from "../../../store/CartStore";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheckCircle, faShoppingCart} from "@fortawesome/free-solid-svg-icons";
 
 const ProductPage = () => {
     const { id } = useParams();
     const [currentProduct, setProduct] = useState();
     const [allProducts, setAllProducts] = useState();
     const navigate = useNavigate();
+    const items = useCartStore(state => state.items);
+
+    const existingItem = currentProduct
+        ? items.find(item => item.productId === currentProduct.id)
+        : null;
 
     console.log("id",id);
     useEffect(() => {
@@ -37,6 +45,16 @@ const ProductPage = () => {
         );
     }
 
+
+    const AddProduct = async () => {
+        console.log("ADD",currentProduct.id);
+        if (!existingItem) {
+            await useCartStore.getState().addItem(currentProduct.id, 1);
+        } else {
+            console.log("Add existing", existingItem);
+            await useCartStore.getState().addItem(currentProduct.id, existingItem.quantity + 1);
+        }
+    }
 
     // return (
     //     <div className=" col-md-9 offset-md-2 d-flex justify-content-center align-items-center" style={{ marginTop: "7%" }}>
@@ -210,6 +228,12 @@ const ProductPage = () => {
                                 </div>
                             ))}
                         </div>
+
+                        <button onClick={AddProduct} className="btn btn-success mt-4 d-flex align-items-center gap-2">
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                            Add to Cart
+                            {existingItem && <FontAwesomeIcon icon={faCheckCircle} className="ms-2 text-white" />}
+                        </button>
                     </div>
                 </div>
             </div>
