@@ -84,7 +84,10 @@ const NavBarPage = ()=> {
                         <ul className="navbar-nav ms-auto">
                             {user ? (
                                 <div className="flex items-center gap-2">
-                                    <img src={`${BASE_URL}/images/50_${user.image}`} alt="Avatar" className="rounded-circle mx-3" />
+                                    <img src={`${BASE_URL}/images/50_${user.image}`}
+                                         alt="Avatar" className="rounded-circle mx-3"
+                                         onClick={ () =>  navigate("Orders") }
+                                    />
                                     <span className={"mx-3 text-white"}>{user.email}</span>
                                     <button className={"mx-3 btn btn btn-light"} onClick={handleLogout}>Вийти</button>
                                 </div>

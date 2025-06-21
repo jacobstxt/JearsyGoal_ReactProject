@@ -16,6 +16,7 @@ import ProductPage from "./pages/Products/Product";
 import CreateProductPage from "./pages/Products/Create";
 import EditProductPage from "./pages/Products/Edit";
 import {useCartStore} from "./store/CartStore";
+import OrdersPage from "./pages/Orders";
 const App = () => {
 
     const { setUser } = useAuthStore((state) => state);
@@ -50,10 +51,9 @@ return (
 
 
                 <Route path={"Categories"}>
-                <Route index element={<CategoriesPage/>}></Route>
-                <Route path={"create"} element={<CreatePage/>}></Route>
-                <Route path={"edit/:id"} element={<EditPage/>}></Route>
-
+                    <Route index element={<CategoriesPage/>}></Route>
+                    <Route path={"create"} element={<CreatePage/>}></Route>
+                    <Route path={"edit/:id"} element={<EditPage/>}></Route>
                 </Route>
 
 
@@ -65,8 +65,13 @@ return (
                 </Route>
 
 
+
                 <Route path={"Account"}>
                     <Route path={"login"} element={<LoginPage/>}></Route>
+                </Route>
+
+                <Route path={"Orders"}>
+                    <Route index element={<OrdersPage/>}></Route>
                 </Route>
 
 
